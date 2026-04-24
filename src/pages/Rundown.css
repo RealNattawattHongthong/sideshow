@@ -1,0 +1,255 @@
+.rundown-page {
+  padding: 24px;
+  flex: 1;
+}
+
+.rundown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.rundown-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.rundown-count {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-refresh:hover {
+  color: var(--text-0);
+  background: var(--bg-4);
+}
+
+.btn-refresh svg {
+  width: 14px;
+  height: 14px;
+}
+
+.offline-banner {
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--red);
+}
+
+.rundown-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-1);
+}
+
+.rundown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.rundown-table thead tr {
+  border-bottom: 1px solid var(--border-md);
+}
+
+.rundown-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--bg-2);
+}
+
+.rundown-row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.rundown-row:last-child {
+  border-bottom: none;
+}
+
+.rundown-row:hover {
+  background: var(--bg-2);
+}
+
+.rundown-row td {
+  padding: 11px 14px;
+  vertical-align: middle;
+}
+
+/* Current event */
+.row-current {
+  background: var(--green-glow) !important;
+  border-left: 3px solid var(--green);
+}
+
+.row-current td {
+  padding-left: 11px;
+}
+
+/* Next event */
+.row-next {
+  background: var(--amber-dim) !important;
+  border-left: 3px solid var(--amber);
+}
+
+.row-next td {
+  padding-left: 11px;
+}
+
+/* Index col */
+.col-index {
+  width: 44px;
+  text-align: center;
+}
+
+.row-num {
+  color: var(--text-3);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.playing-icon {
+  color: var(--green);
+  font-size: 11px;
+}
+
+.next-icon {
+  color: var(--amber);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Cue col */
+.col-cue {
+  width: 80px;
+}
+
+.cue-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* Title col */
+.title-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.event-title {
+  color: var(--text-0);
+  font-weight: 500;
+}
+
+.event-subtitle {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+
+/* Other cols */
+.col-presenter {
+  color: var(--text-2);
+  width: 160px;
+}
+
+.col-start,
+.col-end,
+.col-duration {
+  width: 90px;
+  color: var(--text-2);
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Block row */
+.rundown-block-row td {
+  padding: 8px 14px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border-md);
+}
+
+.block-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* Delay row */
+.rundown-delay-row td {
+  padding: 7px 14px;
+  background: var(--purple-dim);
+}
+
+.delay-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--purple);
+  margin-right: 8px;
+}
+
+.delay-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px !important;
+  color: var(--text-3);
+  font-size: 14px;
+}

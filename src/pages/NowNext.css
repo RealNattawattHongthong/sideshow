@@ -1,0 +1,265 @@
+.nownext-page {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nownext-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clock-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-1);
+  letter-spacing: 0.04em;
+}
+
+.onair-badge {
+  padding: 5px 14px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  animation: pulse-onair 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-onair {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.offline-banner {
+  padding: 10px 16px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--red);
+}
+
+/* Grid */
+.nownext-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+}
+
+@media (max-width: 700px) {
+  .nownext-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.event-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.card-active::before {
+  background: var(--accent, var(--green));
+}
+
+.card-next::before {
+  background: var(--accent, var(--amber));
+}
+
+.card-empty {
+  opacity: 0.4;
+}
+
+.card-placeholder {
+  font-size: 15px;
+  color: var(--text-3);
+  margin: auto;
+  text-align: center;
+}
+
+/* Card label */
+.card-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.card-active .card-label {
+  color: var(--accent, var(--green));
+}
+
+.card-next .card-label {
+  color: var(--accent, var(--amber));
+}
+
+.card-cue {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  align-self: flex-start;
+}
+
+.card-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-0);
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: 15px;
+  color: var(--text-2);
+  margin-top: -4px;
+}
+
+.card-presenter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.card-presenter svg {
+  width: 15px;
+  height: 15px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.card-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Timer */
+.card-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--accent, var(--green));
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.timer-overtime {
+  color: var(--red) !important;
+  animation: pulse-overtime 1s ease-in-out infinite;
+}
+
+@keyframes pulse-overtime {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 4px;
+  background: var(--bg-4);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent, var(--green));
+  border-radius: 2px;
+  transition: width 1s linear;
+  opacity: 0.7;
+}
+
+/* Times */
+.card-times {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.times-arrow {
+  color: var(--text-3);
+}
+
+/* Scheduled */
+.card-scheduled {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.scheduled-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.scheduled-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--accent, var(--amber));
+}
+
+/* Message bars */
+.message-bar {
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-message {
+  background: var(--blue-dim);
+  border: 1px solid rgba(68, 138, 255, 0.3);
+  color: var(--blue);
+}
+
+.public-message {
+  background: var(--green-dim);
+  border: 1px solid var(--green-border);
+  color: var(--green);
+}
+
+.message-icon {
+  opacity: 0.6;
+}

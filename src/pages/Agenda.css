@@ -1,0 +1,346 @@
+/* ── Page ─────────────────────────────────────────────── */
+.agenda-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-0);
+  overflow: hidden;
+  min-height: calc(100vh - var(--nav-h));
+}
+
+/* ── Toolbar ──────────────────────────────────────────── */
+.agenda-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+}
+
+.agenda-toolbar-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-right: 4px;
+}
+
+.agenda-toolbar-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.agenda-toolbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Dropdown ─────────────────────────────────────────── */
+.dd-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dd-select {
+  appearance: none;
+  background: var(--bg-3);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dd-select:hover  { background: var(--bg-4); border-color: var(--border-strong); }
+.dd-select:focus  { border-color: var(--green); }
+
+.dd-select option { background: #1e1e28; }
+
+.dd-arrow {
+  position: absolute;
+  right: 9px;
+  width: 10px;
+  height: 6px;
+  color: var(--text-2);
+  pointer-events: none;
+}
+
+/* ── Badges ───────────────────────────────────────────── */
+.badge-offline {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+
+.badge-onair {
+  padding: 3px 10px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  animation: onair-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes onair-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Viewport ─────────────────────────────────────────── */
+.agenda-viewport {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Focus ring at centre */
+.agenda-focus-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 316px;
+  height: calc(100% - 48px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* ── Track ────────────────────────────────────────────── */
+.agenda-track {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.agenda-track.is-sliding {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Cards ────────────────────────────────────────────── */
+.agenda-card {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.35s, transform 0.35s, border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+/* accent strip on top */
+.agenda-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent, var(--border-strong));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  transition: background 0.3s;
+}
+
+/* Compact variant */
+.agenda-card.is-compact {
+  padding: 14px 16px;
+  gap: 6px;
+}
+
+/* ── Card states ──────────────────────────────────────── */
+.card-past    { opacity: 0.2; transform: scale(0.84); }
+.card-next    { opacity: 0.6; transform: scale(0.92); border-color: rgba(255,171,0,0.2); }
+.card-next::before { background: var(--accent, var(--amber)); }
+
+.card-current {
+  opacity: 1; transform: scale(1.04);
+  border-color: var(--green-border);
+  background: var(--bg-3);
+  box-shadow: 0 0 40px rgba(0,230,118,0.07);
+}
+.card-current::before { background: var(--accent, var(--green)); }
+
+.card-warning {
+  opacity: 1; transform: scale(1.04);
+  border-color: var(--amber-border);
+  background: var(--bg-3);
+  animation: warn-blink 1.1s ease-in-out infinite;
+}
+.card-warning::before { background: var(--accent, var(--amber)); }
+
+.card-danger {
+  opacity: 1; transform: scale(1.04);
+  border-color: var(--red-border);
+  background: var(--bg-3);
+  animation: danger-blink 0.65s ease-in-out infinite;
+}
+.card-danger::before { background: var(--red); }
+
+.card-overtime {
+  opacity: 1; transform: scale(1.04);
+  border-color: var(--red-border);
+  background: #100005;
+  animation: over-blink 0.5s ease-in-out infinite;
+}
+.card-overtime::before { background: var(--red); }
+
+@keyframes warn-blink {
+  0%,100% { box-shadow: 0 0 24px rgba(255,171,0,0.08); }
+  50%      { box-shadow: 0 0 48px rgba(255,171,0,0.28); border-color: var(--amber); }
+}
+@keyframes danger-blink {
+  0%,100% { box-shadow: 0 0 24px rgba(255,69,105,0.12); }
+  50%      { box-shadow: 0 0 56px rgba(255,69,105,0.38); border-color: var(--red); }
+}
+@keyframes over-blink {
+  0%,100% { background: #100005; box-shadow: 0 0 32px rgba(255,69,105,0.2); }
+  50%      { background: #1e000a; box-shadow: 0 0 72px rgba(255,69,105,0.5); }
+}
+
+/* ── Card contents ────────────────────────────────────── */
+.ac-index {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.ac-body { display: flex; flex-direction: column; gap: 5px; }
+
+.ac-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-0);
+  line-height: 1.25;
+  padding-right: 24px;
+}
+
+.is-compact .ac-title { font-size: 14px; }
+
+.ac-subtitle {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.ac-presenter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.ac-presenter svg { width: 12px; height: 12px; opacity: 0.5; flex-shrink: 0; }
+
+.ac-countdown {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.01em;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.card-warning .ac-countdown { color: var(--amber); }
+.card-danger  .ac-countdown { color: var(--red); }
+.ac-countdown.is-over       { color: var(--red); }
+
+.ac-next-chip {
+  align-self: flex-start;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  padding: 3px 7px;
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius-sm);
+  background: var(--amber-dim);
+}
+
+/* ── Empty ────────────────────────────────────────────── */
+.agenda-empty {
+  color: var(--text-3);
+  font-size: 15px;
+  padding: 40px 60px;
+  white-space: nowrap;
+}
+
+/* ── Bottom bar ───────────────────────────────────────── */
+.agenda-bar {
+  display: flex;
+  align-items: center;
+  padding: 14px 28px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-1);
+  gap: 20px;
+}
+
+.abar-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.abar-next { justify-content: flex-end; }
+
+.abar-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+.abar-now .abar-label  { color: var(--green); }
+.abar-next .abar-label { color: var(--amber); }
+
+.abar-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.abar-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--green);
+  flex-shrink: 0;
+  transition: color 0.3s;
+}
+.abar-timer.is-warn   { color: var(--amber); }
+.abar-timer.is-danger { color: var(--red); animation: bar-pulse 0.65s ease-in-out infinite; }
+.abar-timer.is-over   { color: var(--red); animation: bar-pulse 0.5s ease-in-out infinite; }
+
+@keyframes bar-pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}

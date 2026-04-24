@@ -1,0 +1,245 @@
+.presenter-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-0);
+  min-height: calc(100vh - var(--nav-h));
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s;
+}
+
+.presenter-page.is-overtime {
+  background: #100005;
+}
+
+/* Topbar */
+.presenter-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+}
+
+.presenter-clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-2);
+  letter-spacing: 0.06em;
+}
+
+.presenter-indicators {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.p-badge {
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.p-badge.onair {
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  color: var(--red);
+  animation: pulse-onair 1.5s ease-in-out infinite;
+}
+
+.p-badge.paused {
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  color: var(--amber);
+}
+
+.p-badge.stopped {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+
+.p-badge.offline {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-3);
+}
+
+@keyframes pulse-onair {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Main area */
+.presenter-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 80px 40px;
+  gap: 16px;
+}
+
+.presenter-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.presenter-cue {
+  padding: 4px 12px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.presenter-title {
+  font-size: clamp(36px, 5vw, 72px);
+  font-weight: 700;
+  color: var(--text-0);
+  line-height: 1.1;
+  max-width: 900px;
+}
+
+.presenter-subtitle {
+  font-size: clamp(18px, 2.5vw, 32px);
+  color: var(--text-2);
+  font-weight: 400;
+  margin-top: -6px;
+  max-width: 800px;
+}
+
+.presenter-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(16px, 1.8vw, 22px);
+  color: var(--text-2);
+  font-weight: 400;
+}
+
+.presenter-name svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.5;
+}
+
+/* Timer */
+.presenter-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(72px, 14vw, 160px);
+  font-weight: 600;
+  color: var(--green);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-top: 8px;
+  transition: color 0.3s;
+}
+
+.presenter-timer.timer-over {
+  color: var(--red) !important;
+  animation: overtime-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes overtime-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+/* Schedule line */
+.presenter-schedule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--text-3);
+}
+
+.sched-sep {
+  color: var(--text-3);
+}
+
+/* Idle state */
+.presenter-idle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.idle-label {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text-3);
+}
+
+.idle-sub {
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+/* Footer */
+.presenter-footer {
+  padding: 18px 40px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-1);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+}
+
+.footer-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.footer-cue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  background: var(--bg-3);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.footer-title {
+  font-weight: 500;
+  color: var(--text-1);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-sep {
+  color: var(--text-3);
+}
+
+.footer-presenter {
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.footer-time {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--amber);
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
