@@ -253,3 +253,47 @@
   color: var(--text-3);
   font-size: 14px;
 }
+
+/* ── Admin speakers in presenter column ───────────────────────── */
+.rw-speakers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rw-speaker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rw-speaker-photo {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-3);
+  border: 1.5px solid var(--border-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rw-speaker-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rw-speaker-photo svg {
+  width: 15px;
+  height: 15px;
+  color: var(--text-3);
+}
+
+.rw-speaker-name {
+  font-size: 13px;
+  color: var(--text-1);
+}

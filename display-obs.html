@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Display</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,sans-serif;
+  background:#0a0a12;
+  color:#f0f0f8;
+  width:500px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+#canvas{width:500px;min-height:100vh;background:#0a0a12;display:flex;flex-direction:column}
+
+/* header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:22px 26px 18px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0}
+.hdr-left{display:flex;align-items:center;gap:11px}
+.logo{width:22px;height:22px;color:#00e676;flex-shrink:0}
+.title-text{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8888a8}
+.onair{font-size:10px;font-weight:700;letter-spacing:.1em;color:#ff5252;padding:3px 9px;border:1px solid rgba(255,82,82,.3);border-radius:99px;background:rgba(255,82,82,.08);animation:ab 1.5s ease-in-out infinite}
+@keyframes ab{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* list */
+#list{flex:1;overflow-y:auto;padding:6px 0}
+.empty{padding:50px 26px;font-size:14px;color:#555570;text-align:center}
+
+/* row */
+.row{display:flex;align-items:flex-start;gap:12px;padding:14px 26px;border-left:3px solid transparent;border-bottom:1px solid rgba(255,255,255,0.06);transition:background .2s}
+.row:last-child{border-bottom:none}
+.past{opacity:.22}
+.nxt{border-left-color:rgba(255,171,0,.4);background:rgba(255,171,0,.05)}
+.cur{border-left-color:#00e676;background:rgba(0,230,118,.04);scroll-margin-top:12px}
+.blinking{animation:rb 1.2s ease-in-out infinite}
+@keyframes rb{0%,100%{background:rgba(0,230,118,.04)}50%{background:rgba(0,230,118,.11)}}
+
+/* left */
+.rl{width:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding-top:2px}
+.num{font-family:monospace;font-size:12px;color:#555570}
+.dot{width:8px;height:8px;border-radius:50%;background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.5)}
+.dot-blink{animation:dp 1.2s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+
+/* content */
+.rc{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ev-title{font-size:16px;font-weight:600;color:#f0f0f8;line-height:1.25}
+.past .ev-title{color:#555570}
+.ev-sub{font-size:12px;color:#8888a8}
+.ev-pres{display:flex;align-items:center;gap:4px;font-size:12px;color:#8888a8;margin-top:1px}
+.ev-pres svg{width:10px;height:10px;opacity:.5;flex-shrink:0}
+
+/* speakers */
+.spks{display:flex;align-items:center;gap:7px;margin-top:6px;flex-wrap:wrap}
+.spk{display:flex;align-items:center;gap:5px}
+.spk-photo{width:28px;height:28px;border-radius:50%;overflow:hidden;background:#161628;border:1.5px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.spk-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.spk-photo svg{width:16px;height:16px;color:#555570}
+.spk-name{font-size:12px;font-weight:500;color:#8888a8}
+
+/* right */
+.rr{flex-shrink:0;padding-top:2px}
+.badge{font-size:9px;font-weight:700;letter-spacing:.1em;padding:3px 7px;border-radius:4px}
+.now{color:#00e676;border:1px solid rgba(0,230,118,.25);background:rgba(0,230,118,.08)}
+.nxt-badge{color:#ffab00;border:1px solid rgba(255,171,0,.3);background:rgba(255,171,0,.07)}
+
+/* footer */
+.ftr{display:flex;align-items:center;justify-content:space-between;padding:12px 26px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.conn{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500}
+.cdot{width:7px;height:7px;border-radius:50%}
+.ok{color:#00e676}.ok .cdot{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.5)}
+.err{color:#555570}.err .cdot{background:#555570}
+.powered{font-size:10px;color:#555570;letter-spacing:.06em}
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div class="hdr">
+    <div class="hdr-left">
+      <svg class="logo" viewBox="0 0 20 20" fill="none">
+        <rect x="1" y="1" width="7" height="7" rx="1.5" fill="currentColor" opacity=".9"/>
+        <rect x="12" y="1" width="7" height="7" rx="1.5" fill="currentColor" opacity=".4"/>
+        <rect x="1" y="12" width="7" height="7" rx="1.5" fill="currentColor" opacity=".4"/>
+        <rect x="12" y="12" width="7" height="7" rx="1.5" fill="currentColor" opacity=".9"/>
+      </svg>
+      <span class="title-text">SESSION SCHEDULE</span>
+    </div>
+    <div id="hdr-right"></div>
+  </div>
+  <div id="list"><div class="empty">Connecting…</div></div>
+  <div class="ftr">
+    <div class="conn err" id="conn"><span class="cdot"></span><span id="conn-txt">Disconnected</span></div>
+    <div class="powered">Sideshow · OnTime</div>
+  </div>
+</div>
+<script>
+const p    = new URLSearchParams(location.search)
+const HOST = p.get('host') || '82.26.104.52'
+const PORT = p.get('port') || '4001'
+const KEY  = 'sideshow_admin'
+
+let rundown = [], runtime = null, connected = false
+let admin = { blink: false, speakers: [] }
+
+function syncAdmin() {
+  try {
+    const raw  = localStorage.getItem(KEY)
+    const next = raw ? JSON.parse(raw) : { blink: false, speakers: [] }
+    const a = JSON.stringify(next), b = JSON.stringify(admin)
+    if (a !== b) { admin = next; render() }
+  } catch {}
+}
+
+async function fetchRundown() {
+  try {
+    const r = await fetch(`http://${HOST}:${PORT}/data/rundowns/current`)
+    if (!r.ok) return
+    const d = await r.json()
+    rundown = (d.flatOrder||[]).map(id=>d.entries?.[id]).filter(Boolean)
+    render()
+  } catch {}
+}
+
+function connect() {
+  let ws
+  try { ws = new WebSocket(`ws://${HOST}:${PORT}/ws`) }
+  catch { setTimeout(connect, 3000); return }
+
+  ws.onopen  = () => { connected = true;  render(); fetchRundown() }
+  ws.onclose = () => { connected = false; runtime = null; render(); setTimeout(connect, 3000) }
+  ws.onerror = () => { connected = false; render() }
+  ws.onmessage = e => {
+    try {
+      const m = JSON.parse(e.data)
+      if (m.tag === 'runtime-data') {
+        runtime = runtime ? {...runtime, ...m.payload} : m.payload
+        render()
+      }
+    } catch {}
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function render() {
+  const events  = rundown.filter(e => e.type === 'event')
+  const selId   = runtime?.eventNow?.id  ?? null
+  const nxtId   = runtime?.eventNext?.id ?? null
+  const curIdx  = events.findIndex(e => e.id === selId)
+  const onAir   = runtime?.onAir
+  const blink   = admin.blink
+  const spks    = admin.speakers || []
+
+  document.getElementById('hdr-right').innerHTML = onAir ? '<span class="onair">● LIVE</span>' : ''
+
+  const ce = document.getElementById('conn')
+  ce.className = 'conn ' + (connected ? 'ok' : 'err')
+  document.getElementById('conn-txt').textContent = connected ? 'Live' : 'Disconnected'
+
+  const list = document.getElementById('list')
+
+  if (!events.length) {
+    list.innerHTML = `<div class="empty">${connected ? 'No events loaded' : 'Connecting to OnTime…'}</div>`
+    return
+  }
+
+  let html = ''
+  events.forEach((ev, i) => {
+    const isCur  = ev.id === selId
+    const isNxt  = ev.id === nxtId
+    const isPast = curIdx > -1 && i < curIdx
+    const rowSpk = spks.filter(s => s.sessionId === ev.id && (s.name || s.image))
+
+    let cls = 'row'
+    if      (isCur)  cls += blink ? ' cur blinking' : ' cur'
+    else if (isNxt)  cls += ' nxt'
+    else if (isPast) cls += ' past'
+
+    const left = isCur
+      ? `<span class="dot${blink?' dot-blink':''}"></span>`
+      : `<span class="num">${i+1}</span>`
+
+    let body = `<div class="ev-title">${esc(ev.title||'—')}</div>`
+    if (ev.subtitle)  body += `<div class="ev-sub">${esc(ev.subtitle)}</div>`
+    if (ev.presenter) body += `<div class="ev-pres"><svg viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="4" r="2"/><path d="M1 11c0-2.761 2.239-5 5-5s5 2.239 5 5"/></svg>${esc(ev.presenter)}</div>`
+
+    if (rowSpk.length) {
+      body += '<div class="spks">'
+      rowSpk.forEach(s => {
+        const img = s.image
+          ? `<img src="${s.image}" alt="">`
+          : `<svg viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="11" r="6"/><path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12"/></svg>`
+        body += `<div class="spk"><div class="spk-photo">${img}</div>${s.name?`<span class="spk-name">${esc(s.name)}</span>`:''}</div>`
+      })
+      body += '</div>'
+    }
+
+    const badge = isCur ? '<span class="badge now">NOW</span>' : isNxt ? '<span class="badge nxt-badge">NEXT</span>' : ''
+
+    html += `<div class="${cls}" id="r${ev.id}"><div class="rl">${left}</div><div class="rc">${body}</div><div class="rr">${badge}</div></div>`
+  })
+
+  list.innerHTML = html
+  if (selId) document.getElementById('r'+selId)?.scrollIntoView({behavior:'smooth',block:'start'})
+}
+
+connect()
+syncAdmin()
+setInterval(syncAdmin, 500)
+</script>
+</body>
+</html>

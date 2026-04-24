@@ -18,7 +18,7 @@ function FullscreenBtn({ canvasRef }) {
   )
 }
 
-export default function Display() {
+export default function Display({ kiosk = false }) {
   const { rundown, runtimeState, connected, selectedEventId, nextEventId } = useOntime()
   const { blink, speakers } = useAdmin()
 
@@ -30,11 +30,11 @@ export default function Display() {
   const canvasRef  = useRef(null)
 
   useEffect(() => {
-    currentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    currentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [selectedEventId])
 
   return (
-    <div className="display-shell">
+    <div className={`display-shell${kiosk ? ' display-kiosk' : ''}`}>
       <div className="display-canvas" ref={canvasRef}>
 
         {/* Header */}
@@ -54,80 +54,79 @@ export default function Display() {
           </div>
         </div>
 
-        {/* Event list */}
+        {/* Event table */}
         <div className="disp-list">
-          {events.length === 0 && (
+          {events.length === 0 ? (
             <div className="disp-empty">
               {connected ? 'No events loaded' : 'Not connected to OnTime'}
             </div>
-          )}
+          ) : (
+            <table className="disp-table">
+              <thead>
+                <tr>
+                  <th className="dt-th dt-col-num">#</th>
+                  <th className="dt-th dt-col-session">Session</th>
+                  <th className="dt-th dt-col-speaker">Speaker</th>
+                  <th className="dt-th dt-col-status"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((event, idx) => {
+                  const isCurrent   = event.id === selectedEventId
+                  const isNext      = event.id === nextEventId
+                  const isPast      = currentIdx > -1 && idx < currentIdx
+                  const rowSpeakers = speakers.filter(s => s.sessionId === event.id && (s.name || s.image))
 
-          {events.map((event, idx) => {
-            const isCurrent = event.id === selectedEventId
-            const isNext    = event.id === nextEventId
-            const isPast    = currentIdx > -1 && idx < currentIdx
-            const rowSpeakers = speakers.filter(s => s.sessionId === event.id && (s.name || s.image))
+                  let cls = 'dt-row'
+                  if (isCurrent)   cls += blink ? ' dr-current dr-blink' : ' dr-current'
+                  else if (isNext) cls += ' dr-next'
+                  else if (isPast) cls += ' dr-past'
 
-            let cls = 'disp-row'
-            if (isCurrent)   cls += blink ? ' dr-current dr-blink' : ' dr-current'
-            else if (isNext) cls += ' dr-next'
-            else if (isPast) cls += ' dr-past'
-
-            return (
-              <div
-                key={event.id}
-                className={cls}
-                ref={isCurrent ? currentRef : null}
-                style={event.colour ? { '--rc': event.colour } : {}}
-              >
-                <div className="dr-left">
-                  {isCurrent
-                    ? <span className={`dr-dot ${blink ? 'dr-dot-blink' : ''}`} />
-                    : <span className="dr-num">{idx + 1}</span>
-                  }
-                </div>
-
-                <div className="dr-content">
-                  <div className="dr-title">{event.title || '—'}</div>
-                  {event.subtitle  && <div className="dr-sub">{event.subtitle}</div>}
-                  {event.presenter && (
-                    <div className="dr-presenter">
-                      <svg viewBox="0 0 12 12" fill="currentColor">
-                        <circle cx="6" cy="4" r="2"/>
-                        <path d="M1 11c0-2.761 2.239-5 5-5s5 2.239 5 5"/>
-                      </svg>
-                      {event.presenter}
-                    </div>
-                  )}
-                  {rowSpeakers.length > 0 && (
-                    <div className="dr-speakers">
-                      {rowSpeakers.map(s => (
-                        <div key={s.id} className="dr-speaker">
-                          <div className="dr-speaker-photo">
-                            {s.image
-                              ? <img src={s.image} alt={s.name || 'Speaker'} />
-                              : (
-                                <svg viewBox="0 0 32 32" fill="currentColor">
-                                  <circle cx="16" cy="11" r="6" />
-                                  <path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" />
-                                </svg>
-                              )
-                            }
+                  return (
+                    <tr
+                      key={event.id}
+                      className={cls}
+                      ref={isCurrent ? currentRef : null}
+                    >
+                      <td className="dt-td dt-col-num">
+                        {isCurrent
+                          ? <span className={`dr-dot ${blink ? 'dr-dot-blink' : ''}`} />
+                          : <span className="dr-num">{idx + 1}</span>
+                        }
+                      </td>
+                      <td className="dt-td dt-col-session">
+                        <div className="dr-title">{event.title || '—'}</div>
+                        {event.subtitle && <div className="dr-sub">{event.subtitle}</div>}
+                      </td>
+                      <td className="dt-td dt-col-speaker">
+                        {rowSpeakers.length > 0 ? (
+                          <div className="dr-speakers">
+                            {rowSpeakers.map(s => (
+                              <div key={s.id} className="dr-speaker">
+                                <div className="dr-speaker-photo">
+                                  {s.image
+                                    ? <img src={s.image} alt={s.name || 'Speaker'} />
+                                    : <svg viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="11" r="6"/><path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12"/></svg>
+                                  }
+                                </div>
+                                {s.name && <span className="dr-speaker-name">{s.name}</span>}
+                              </div>
+                            ))}
                           </div>
-                          {s.name && <span className="dr-speaker-name">{s.name}</span>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="dr-right">
-                  {isCurrent && <span className="dr-badge dr-badge-now">NOW</span>}
-                  {isNext    && <span className="dr-badge dr-badge-next">NEXT</span>}
-                </div>
-              </div>
-            )
-          })}
+                        ) : event.presenter ? (
+                          <span className="dt-presenter">{event.presenter}</span>
+                        ) : null}
+                      </td>
+                      <td className="dt-td dt-col-status">
+                        {isCurrent && <span className="dr-badge dr-badge-now">NOW</span>}
+                        {isNext    && <span className="dr-badge dr-badge-next">NEXT</span>}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {/* Footer */}

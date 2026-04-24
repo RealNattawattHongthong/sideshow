@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useOntime } from '../context/OntimeContext'
+import { useAdmin } from '../context/AdminContext'
 import { msToHHMM, formatDuration } from '../utils/time'
 import './Rundown.css'
 
@@ -28,6 +29,7 @@ function SpecialRow({ item }) {
 
 export default function Rundown() {
   const { runtimeState, rundown, connected, fetchRundown, selectedEventId, nextEventId } = useOntime()
+  const { speakers } = useAdmin()
   const selectedRef = useRef(null)
 
   useEffect(() => {
@@ -92,6 +94,8 @@ export default function Rundown() {
               const isNext = item.id === nextEventId
               const eventIndex = rundown.slice(0, idx + 1).filter(e => e.type === 'event').length
 
+              const rowSpeakers = speakers.filter(s => s.sessionId === item.id && (s.name || s.image))
+
               let rowClass = 'rundown-row'
               if (isCurrent) rowClass += ' row-current'
               else if (isNext) rowClass += ' row-next'
@@ -123,7 +127,25 @@ export default function Rundown() {
                       </div>
                     </div>
                   </td>
-                  <td className="col-presenter">{item.presenter || '—'}</td>
+                  <td className="col-presenter">
+                    {rowSpeakers.length > 0 ? (
+                      <div className="rw-speakers">
+                        {rowSpeakers.map(s => (
+                          <div key={s.id} className="rw-speaker">
+                            <div className="rw-speaker-photo">
+                              {s.image
+                                ? <img src={s.image} alt={s.name || 'Speaker'} />
+                                : <svg viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="11" r="6"/><path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12"/></svg>
+                              }
+                            </div>
+                            {s.name && <span className="rw-speaker-name">{s.name}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      item.presenter || '—'
+                    )}
+                  </td>
                   <td className="col-start mono">{msToHHMM(item.timeStart)}</td>
                   <td className="col-end mono">{msToHHMM(item.timeEnd)}</td>
                   <td className="col-duration mono">{formatDuration(item.duration)}</td>
