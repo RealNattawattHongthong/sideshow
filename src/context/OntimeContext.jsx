@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef, useCallback } f
 
 const OntimeContext = createContext(null)
 const STORAGE_KEY = 'ontime_config'
+const RUNDOWN_KEY = 'ontime_rundown'
 
 export function OntimeProvider({ children }) {
   const [config, setConfig] = useState(() => {
@@ -14,7 +15,12 @@ export function OntimeProvider({ children }) {
   })
 
   const [runtimeState, setRuntimeState] = useState(null)
-  const [rundown, setRundown] = useState([])
+  const [rundown, setRundown] = useState(() => {
+    try {
+      const s = localStorage.getItem(RUNDOWN_KEY)
+      return s ? JSON.parse(s) : []
+    } catch { return [] }
+  })
   const [connected, setConnected] = useState(false)
   const wsRef = useRef(null)
 
@@ -25,15 +31,25 @@ export function OntimeProvider({ children }) {
       const res = await fetch(`http://${host}:${port}/data/rundowns/current`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-      // Flatten entries via flatOrder
       const flat = (data.flatOrder ?? [])
         .map(id => data.entries?.[id])
         .filter(Boolean)
       setRundown(flat)
+      try { localStorage.setItem(RUNDOWN_KEY, JSON.stringify(flat)) } catch {}
     } catch (e) {
       console.warn('Rundown fetch failed:', e.message)
     }
   }, [host, port])
+
+  useEffect(() => {
+    function onStorage(e) {
+      if (e.key === RUNDOWN_KEY && e.newValue) {
+        try { setRundown(JSON.parse(e.newValue)) } catch {}
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   useEffect(() => {
     let ws

@@ -4,7 +4,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: #050508;
+  background: var(--bg-0);
   padding: 32px 16px;
 }
 
@@ -32,13 +32,36 @@
 .display-canvas {
   width: 500px;
   min-height: 1080px;
-  background: #0a0a12;
+  background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+  position: relative;
+  animation: canvas-in 2.5s ease forwards;
+}
+
+@keyframes canvas-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.disp-blackout {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 4s ease;
+}
+
+.disp-blackout--on {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 2s ease;
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
@@ -253,9 +276,7 @@
 .dt-col-status  { width: 52px; text-align: center; }
 
 .dt-row {
-  border-left: 3px solid transparent;
   border-bottom: 1px solid var(--border);
-  transition: background 0.2s;
 }
 .dt-row:last-child { border-bottom: none; }
 
@@ -267,15 +288,38 @@
 .dt-col-num.dt-td { text-align: center; }
 .dt-col-status.dt-td { text-align: center; }
 
-/* Row states */
-.dr-past    { opacity: 0.25; }
-.dr-next    { border-left-color: rgba(255,171,0,0.4); background: var(--amber-dim); }
-.dr-current { border-left-color: var(--green); background: var(--green-glow); scroll-margin-top: 12px; }
+/* Row states — background/animation must be on td, not tr */
+.dr-past   { opacity: 0.25; }
+.dr-future { opacity: 0.35; filter: grayscale(1); }
 
-.dr-blink { animation: row-blink 1.2s ease-in-out infinite; }
+.dr-next .dt-td    { background: var(--amber-dim); }
+.dr-current .dt-td { background: var(--green-glow); scroll-margin-top: 12px; }
+
+/* Left border on first cell */
+.dr-next .dt-col-num    { border-left: 3px solid rgba(255,171,0,0.4); }
+.dr-current .dt-col-num { border-left: 3px solid var(--green); }
+
+/* Slide-in on every tbody mount (triggered by wooshKey) */
+.dt-row .dt-td {
+  animation: row-slide-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--row-delay, 0s);
+}
+
+@keyframes row-slide-in {
+  from { transform: translateX(48px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Blink only on td cells — starts after slide completes */
+.dr-blink .dt-td {
+  animation:
+    row-slide-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) both,
+    row-blink 1.2s calc(var(--row-delay, 0s) + 1.4s) ease-in-out infinite;
+}
+
 @keyframes row-blink {
   0%,100% { background: var(--green-glow); }
-  50%      { background: rgba(0,230,118,0.1); }
+  50%      { background: var(--border-strong); }
 }
 
 /* Number / dot */

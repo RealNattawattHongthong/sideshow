@@ -7,7 +7,7 @@
   align-items: center;
   gap: 32px;
   padding: 0 24px;
-  background: rgba(8, 8, 13, 0.9);
+  background: color-mix(in srgb, var(--bg-0) 90%, transparent);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
 }
@@ -113,6 +113,31 @@
   letter-spacing: 0.08em;
   font-family: 'JetBrains Mono', monospace;
   transition: color 0.3s;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.theme-btn:hover {
+  color: var(--text-0);
+  background: var(--bg-3);
+  border-color: var(--border);
+}
+
+.theme-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .status-host {

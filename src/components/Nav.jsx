@@ -43,6 +43,33 @@ function FullscreenBtn() {
   )
 }
 
+function ThemeBtn() {
+  const [theme, setTheme] = useState(
+    () => document.documentElement.getAttribute('data-theme') || 'dark'
+  )
+
+  const toggle = useCallback(() => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('sideshow_theme', next)
+    setTheme(next)
+  }, [theme])
+
+  return (
+    <button className="theme-btn" onClick={toggle} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+      {theme === 'dark' ? (
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.42 1.42l-.7.7a1 1 0 11-1.42-1.42l.7-.7zM18 9a1 1 0 110 2h-1a1 1 0 110-2h1zM4.78 3.78a1 1 0 00-1.42 1.42l.7.7a1 1 0 001.42-1.42l-.7-.7zM3 9a1 1 0 100 2H2a1 1 0 100-2h1zm1.22 6.22a1 1 0 011.42 0l.7.7a1 1 0 01-1.42 1.42l-.7-.7a1 1 0 010-1.42zM10 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm5.78-1.78a1 1 0 00-1.42 1.42l.7.7a1 1 0 001.42-1.42l-.7-.7zM10 6a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+      ) : (
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+      )}
+    </button>
+  )
+}
+
 export default function Nav() {
   const { connected, playback, config } = useOntime()
 
@@ -79,6 +106,7 @@ export default function Nav() {
           {connected && <span className="status-host">{config.host}:{config.port}</span>}
         </div>
 
+        <ThemeBtn />
         <FullscreenBtn />
       </div>
     </nav>

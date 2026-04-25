@@ -180,7 +180,7 @@ function render() {
     else if (isPast) cls += ' past'
 
     const left = isCur
-      ? `<span class="dot${blink?' dot-blink':''}"></span>`
+      ? `<span class="dot"></span>`
       : `<span class="num">${i+1}</span>`
 
     let body = `<div class="ev-title">${esc(ev.title||'—')}</div>`

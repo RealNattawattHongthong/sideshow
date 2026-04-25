@@ -1,9 +1,11 @@
 import { useOntime } from '../context/OntimeContext'
+import { useAdmin } from '../context/AdminContext'
 import { msToClock, msToCountdown, msToHHMM } from '../utils/time'
 import './Presenter.css'
 
 export default function Presenter() {
   const { runtimeState, connected, playback } = useOntime()
+  const { blackout, presenterBlink, presenterMsg, presenterMsgOn, presenterMsgBlink, presenterMsgSize } = useAdmin()
 
   const event = runtimeState?.eventNow
   const nextEvent = runtimeState?.eventNext
@@ -14,6 +16,12 @@ export default function Presenter() {
 
   return (
     <div className={`presenter-page ${isOvertime ? 'is-overtime' : ''}`}>
+      {blackout && <div className="presenter-blackout" />}
+      {presenterMsgOn && presenterMsg && !blackout && (
+        <div className="presenter-msg" style={{ fontSize: presenterMsgSize }}>
+          <span className={presenterMsgBlink ? 'msg-text-blink' : ''}>{presenterMsg}</span>
+        </div>
+      )}
       <div className="presenter-topbar">
         <div className="presenter-clock">{msToClock(clock)}</div>
         <div className="presenter-indicators">
@@ -41,7 +49,7 @@ export default function Presenter() {
             </div>
           )}
           <div
-            className={`presenter-timer ${isOvertime ? 'timer-over' : ''}`}
+            className={`presenter-timer ${isOvertime ? 'timer-over' : ''} ${presenterBlink && !isOvertime ? 'timer-blink' : ''}`}
             style={event.colour && !isOvertime ? { color: event.colour } : {}}
           >
             {msToCountdown(timer?.current)}

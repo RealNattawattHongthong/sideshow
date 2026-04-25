@@ -98,6 +98,11 @@
   border-color: var(--green-soft);
 }
 
+.toggle-btn.toggle-blackout {
+  background: var(--red);
+  border-color: var(--red);
+}
+
 .toggle-thumb {
   position: absolute;
   top: 3px;
@@ -293,6 +298,123 @@
 .speaker-remove svg { width: 14px; height: 14px; }
 
 /* ── Add speaker button ───────────────────────── */
+.admin-msg-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.admin-msg-row .admin-input {
+  margin-top: 0;
+  flex: 1;
+}
+
+.admin-msg-size-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.admin-size-slider {
+  flex: 1;
+  accent-color: var(--green);
+  cursor: pointer;
+  height: 4px;
+}
+
+.admin-size-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-2);
+  min-width: 40px;
+  text-align: right;
+}
+
+.btn-msg-toggle {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-3);
+  border: 1px solid var(--border-md);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-msg-toggle svg { width: 16px; height: 16px; }
+
+.btn-msg-toggle:hover {
+  color: var(--text-0);
+  background: var(--bg-4);
+}
+
+.btn-msg-toggle.msg-on {
+  background: #ffab00;
+  border-color: #ffab00;
+  color: #000;
+}
+
+.btn-msg-toggle.msg-blink-on {
+  background: var(--red-dim);
+  border-color: var(--red-border);
+  color: var(--red);
+}
+
+.btn-refresh-rundown {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.btn-refresh-rundown:hover {
+  color: var(--green);
+  border-color: var(--green-border);
+  background: var(--green-dim);
+}
+
+.btn-refresh-rundown svg { width: 14px; height: 14px; }
+
+.btn-woosh {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-1);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.btn-woosh:hover {
+  color: var(--green);
+  border-color: var(--green-border);
+  background: var(--green-dim);
+}
+
+.btn-woosh svg { width: 15px; height: 15px; }
+
 .btn-add-speaker {
   display: flex;
   align-items: center;

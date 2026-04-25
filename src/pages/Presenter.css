@@ -1,3 +1,51 @@
+.presenter-blackout {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+}
+
+.presenter-msg {
+  position: fixed;
+  inset: 0;
+  background: #ffab00;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 800;
+  text-align: center;
+  padding: 60px;
+  z-index: 999;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  animation: msg-in 0.2s ease;
+}
+
+@keyframes msg-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.msg-text-blink {
+  animation: msg-text-blink 1s ease-in-out infinite;
+}
+
+@keyframes msg-text-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.timer-blink {
+  animation: timer-blink 1s ease-in-out infinite;
+}
+
+@keyframes timer-blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
 .presenter-page {
   flex: 1;
   display: flex;

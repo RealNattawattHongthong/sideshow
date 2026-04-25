@@ -3,6 +3,11 @@ import { useOntime } from '../context/OntimeContext'
 import { useAdmin } from '../context/AdminContext'
 import './Display.css'
 
+function nowHHMM() {
+  const d = new Date()
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+}
+
 function FullscreenBtn({ canvasRef }) {
   const toggle = useCallback(() => {
     if (!document.fullscreenElement) canvasRef.current?.requestFullscreen()
@@ -20,22 +25,38 @@ function FullscreenBtn({ canvasRef }) {
 
 export default function Display({ kiosk = false }) {
   const { rundown, runtimeState, connected, selectedEventId, nextEventId } = useOntime()
-  const { blink, speakers } = useAdmin()
+  const { blink, speakers, wooshKey, wooshSchedule, triggerWoosh, displayBlackout, displayShowNow, displayShowNext, displayGreyFuture } = useAdmin()
 
   const events     = rundown.filter(e => e.type === 'event')
   const currentIdx = events.findIndex(e => e.id === selectedEventId)
+  const nextIdx    = events.findIndex(e => e.id === nextEventId)
   const isOnAir    = runtimeState?.onAir
 
-  const currentRef = useRef(null)
-  const canvasRef  = useRef(null)
+  const canvasRef = useRef(null)
 
   useEffect(() => {
-    currentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [selectedEventId])
+    if (!wooshSchedule) return
+    const check = () => {
+      const hhmm = nowHHMM()
+      if (hhmm === wooshSchedule) {
+        const firedKey = `woosh_auto_${hhmm}`
+        if (!sessionStorage.getItem(firedKey)) {
+          sessionStorage.setItem(firedKey, '1')
+          triggerWoosh()
+        }
+      }
+    }
+    check()
+    const id = setInterval(check, 10000)
+    return () => clearInterval(id)
+  }, [wooshSchedule, triggerWoosh])
+
 
   return (
     <div className={`display-shell${kiosk ? ' display-kiosk' : ''}`}>
       <div className="display-canvas" ref={canvasRef}>
+
+        <div className={`disp-blackout ${displayBlackout ? 'disp-blackout--on' : ''}`} />
 
         {/* Header */}
         <div className="disp-header">
@@ -70,27 +91,31 @@ export default function Display({ kiosk = false }) {
                   <th className="dt-th dt-col-status"></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody key={wooshKey}>
                 {events.map((event, idx) => {
                   const isCurrent   = event.id === selectedEventId
                   const isNext      = event.id === nextEventId
                   const isPast      = currentIdx > -1 && idx < currentIdx
                   const rowSpeakers = speakers.filter(s => s.sessionId === event.id && (s.name || s.image))
 
+                  const isFuture = displayGreyFuture && !isCurrent && !isNext && !isPast && nextIdx > -1 && idx > nextIdx
+
                   let cls = 'dt-row'
-                  if (isCurrent)   cls += blink ? ' dr-current dr-blink' : ' dr-current'
-                  else if (isNext) cls += ' dr-next'
-                  else if (isPast) cls += ' dr-past'
+                  if (isCurrent && displayShowNow)    cls += blink ? ' dr-current dr-blink' : ' dr-current'
+                  else if (isNext && displayShowNext) cls += ' dr-next'
+                  else if (isPast)                    cls += ' dr-past'
+                  else if (isFuture)                  cls += ' dr-future'
 
                   return (
                     <tr
                       key={event.id}
                       className={cls}
-                      ref={isCurrent ? currentRef : null}
+
+                      style={{ '--row-delay': `${idx * 0.12}s` }}
                     >
                       <td className="dt-td dt-col-num">
                         {isCurrent
-                          ? <span className={`dr-dot ${blink ? 'dr-dot-blink' : ''}`} />
+                          ? <span className="dr-dot" />
                           : <span className="dr-num">{idx + 1}</span>
                         }
                       </td>
@@ -118,8 +143,8 @@ export default function Display({ kiosk = false }) {
                         ) : null}
                       </td>
                       <td className="dt-td dt-col-status">
-                        {isCurrent && <span className="dr-badge dr-badge-now">NOW</span>}
-                        {isNext    && <span className="dr-badge dr-badge-next">NEXT</span>}
+                        {isCurrent && displayShowNow  && <span className="dr-badge dr-badge-now">NOW</span>}
+                        {isNext    && displayShowNext && <span className="dr-badge dr-badge-next">NEXT</span>}
                       </td>
                     </tr>
                   )
